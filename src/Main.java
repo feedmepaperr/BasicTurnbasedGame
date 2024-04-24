@@ -2,23 +2,28 @@ import java.util.*;
 
 public class Main {
     private static final int NUM_HEROES = 3;
-    private static List<BaseHero> heroes;
-    private static List<BaseEnemy> enemies;
-    private static boolean gameOver = false;
+    private List<BaseHero> heroes;
+    private List<BaseEnemy> enemies;
+    private boolean gameOver = false;
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        heroes = selectHeroes(sc); // Select heroes for the game
-        enemies = initializeEnemies(); // Initialize enemies
-
-        while (!gameOver) {
-            List<CombatEntity> combatEntities = initializeCombatEntities(heroes, enemies); // Initialize combat entities
-            playRound(combatEntities, sc); // Play a round of combat
-        }
-
+        Main game = new Main();
+        game.startGame(sc);
         sc.close();
         System.out.println();
         System.out.println("Game Over");
+    }
+
+    private void startGame(Scanner scanner) {
+        heroes = selectHeroes(scanner); // Select heroes for the game
+        enemies = initializeEnemies(); // Initialize enemies
+        gameOver = false;
+
+        while (!gameOver) {
+            List<CombatEntity> combatEntities = initializeCombatEntities(heroes, enemies); // Initialize combat entities
+            playRound(combatEntities, scanner); // Play a round of combat
+        }
     }
 
     // Method to allow player to select heroes
@@ -32,8 +37,22 @@ public class Main {
         System.out.println("4. Tank");
 
         for (int i = 0; i < NUM_HEROES; i++) {
-            System.out.println("Select hero " + (i + 1) + " of " + NUM_HEROES + ":");
-            int choice = scanner.nextInt();
+            int choice = 0;
+            boolean validChoice = false;
+            while (!validChoice) {
+                System.out.println("Select hero " + (i + 1) + " of " + NUM_HEROES + ":");
+                if (scanner.hasNextInt()) {
+                    choice = scanner.nextInt();
+                    if (choice >= 1 && choice <= 4) {
+                        validChoice = true;
+                    } else {
+                        System.out.println("Invalid choice. Please select a number between 1 and 4.");
+                    }
+                } else {
+                    System.out.println("Invalid input. Please enter a number.");
+                    scanner.next(); // Consume invalid input
+                }
+            }
             scanner.nextLine(); // Consume newline
             BaseHero hero = createHero(choice, chosenNames); // Create the hero
             heroes.add(hero);
@@ -98,7 +117,7 @@ public class Main {
     }
 
     // Method to play a round of combat
-    private static void playRound(List<CombatEntity> combatEntities, Scanner scanner) {
+    private void playRound(List<CombatEntity> combatEntities, Scanner scanner) {
         // Hero and enemy turns
         gameOver = checkGameOver(); // Check if the game is over
         if (gameOver){
@@ -116,7 +135,7 @@ public class Main {
     }
 
     // Method to handle a combat entity's turn (both hero and enemy)
-    private static void handleTurn(CombatEntity entity, Scanner scanner) {
+    private void handleTurn(CombatEntity entity, Scanner scanner) {
         if (entity instanceof BaseHero) {
             BaseEnemy targetEnemy = chooseTargetEnemy(scanner); // Choose the target enemy
             if (targetEnemy != null) {
@@ -129,7 +148,7 @@ public class Main {
     }
 
     // Method to perform an attack on a target entity
-    private static void attackEntity(CombatEntity attacker, CombatEntity target) {
+    private void attackEntity(CombatEntity attacker, CombatEntity target) {
         int damageDealt = attacker.attack(target); // Perform the attack
         System.out.println(attacker.getName() + " attacks " + target.getName() + "!");
         System.out.println("Dealt " + damageDealt + " damage.");
@@ -144,12 +163,12 @@ public class Main {
     }
 
     // Method to check if the game is over
-    private static boolean checkGameOver() {
+    private boolean checkGameOver() {
         return heroes.isEmpty() || enemies.isEmpty();
     }
 
     // Method to choose the target enemy
-    private static BaseEnemy chooseTargetEnemy(Scanner scanner) {
+    private BaseEnemy chooseTargetEnemy(Scanner scanner) {
         System.out.println("Choose the target enemy:");
         for (int i = 0; i < enemies.size(); i++) {
             System.out.println((i + 1) + ". " + enemies.get(i).getName() + " (" + enemies.get(i).getHealth() + " health)");
@@ -165,7 +184,7 @@ public class Main {
     }
 
     // Method to get a random hero
-    private static BaseHero randomHero() {
+    private BaseHero randomHero() {
         int index = (int) (Math.random() * heroes.size());
         return heroes.get(index);
     }

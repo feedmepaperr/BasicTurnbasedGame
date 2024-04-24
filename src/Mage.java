@@ -2,7 +2,7 @@
 public class Mage extends BaseHero {
 
     public Mage(String name) {
-        super(name, 100, 5, 5, 10, 5); // adjust as needed for balance :)
+        super(name, 100, 5, 5, 10, 15); // adjust as needed for balance :)
     }
 
     // Implement attack method
