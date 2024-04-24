@@ -1,3 +1,14 @@
+/*
+Hey, my name is Four. Today is 4/23/24.
+This program is a little console game, right now as it stands
+it's pretty unbalanced, and honestly not super fun to play.
+I made this for a class though (CS 145), so I was kinda limited on time, you'll have to forgive me.
+It's meant to showcase inheritance in java, which is what we're learning in class right now.
+Definitely has issues, I am unsure if I'll fix them, but it's a solid maybe.
+Game allows player to choose a group of 3 "heroes" to fight against 3 enemies.
+Game ends once either the heroes have all died, or the enemies have.
+ */
+
 import java.util.*;
 
 // Main class representing the game
