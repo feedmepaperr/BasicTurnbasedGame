@@ -1,25 +1,29 @@
 import java.util.*;
 
+// Main class representing the game
 public class Main {
     private static final int NUM_HEROES = 3;
     private List<BaseHero> heroes;
     private List<BaseEnemy> enemies;
     private boolean gameOver = false;
 
+    // Main method to start the game
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         Main game = new Main();
-        game.startGame(sc);
-        sc.close();
+        game.startGame(sc); // Start the game
+        sc.close(); // Close the scanner
         System.out.println();
         System.out.println("Game Over");
     }
 
+    // Method to start the game
     private void startGame(Scanner scanner) {
         heroes = selectHeroes(scanner); // Select heroes for the game
         enemies = initializeEnemies(); // Initialize enemies
         gameOver = false;
 
+        // Game loop
         while (!gameOver) {
             List<CombatEntity> combatEntities = initializeCombatEntities(heroes, enemies); // Initialize combat entities
             playRound(combatEntities, scanner); // Play a round of combat
@@ -30,7 +34,7 @@ public class Main {
     private static List<BaseHero> selectHeroes(Scanner scanner) {
         List<BaseHero> heroes = new ArrayList<>();
         List<String> chosenNames = new ArrayList<>(); // List to store chosen names
-        System.out.println("Welcome to the game! Choose your heroes:");
+        System.out.println("Welcome to the game! Choose your heroes.");
         System.out.println("1. Fighter");
         System.out.println("2. Mage");
         System.out.println("3. Ranger");
@@ -58,7 +62,7 @@ public class Main {
             heroes.add(hero);
             System.out.println("Hero " + (i + 1) + " selected, meet " + hero.getName());
         }
-        sleep(1000);
+        sleep(1000); // Pause for readability
         return heroes;
     }
 
@@ -83,18 +87,20 @@ public class Main {
         }
     }
 
-    // Method to randomly pick a hero name that hasn't been chosen yet
+    // Method to randomly pick a hero name that hasn't been chosen yet.
+    // makes recognizing heroes easier.
     private static String pickHeroName(List<String> chosenNames) {
         // Define a set of possible names
+        // could be customized further.
         String[] possibleNames = {"Joe", "Alex", "Wendy", "Jacob", "Ellie", "Ollie", "Ethan", "Darrell"};
 
         // Remove already chosen names from possible names
         List<String> availableNames = new ArrayList<>(Arrays.asList(possibleNames));
         availableNames.removeAll(chosenNames);
 
-        // Randomly select a name from available names
-        Random random = new Random();
-        String chosenName = availableNames.get(random.nextInt(availableNames.size()));
+        // Get a random name.
+        int randomIndex = (int) (Math.random() * availableNames.size());
+        String chosenName = availableNames.get(randomIndex);
 
         // Add the chosen name to the list of chosen names
         chosenNames.add(chosenName);
@@ -103,11 +109,14 @@ public class Main {
     }
 
     // Method to initialize enemies
+    // doesn't need to be hardcoded, but for simplicity it is.
+    // it would be incredibly simple to add more monster types and make the game feel more dynamic.
     private static List<BaseEnemy> initializeEnemies() {
         return new ArrayList<>(Arrays.asList(new Goblin("Goblin 1"), new Highwayman("Highwayman 1"), new Kobold("Kobold 1")));
     }
 
-    // Method to initialize combat entities (heroes and enemies) for a round
+    // Method to initialize combat entities (heroes and enemies) for a round, randomizes order.
+    // could use some work to make game feel more fair
     private static List<CombatEntity> initializeCombatEntities(List<BaseHero> heroes, List<BaseEnemy> enemies) {
         List<CombatEntity> combatEntities = new ArrayList<>();
         combatEntities.addAll(heroes);
@@ -173,27 +182,37 @@ public class Main {
         for (int i = 0; i < enemies.size(); i++) {
             System.out.println((i + 1) + ". " + enemies.get(i).getName() + " (" + enemies.get(i).getHealth() + " health)");
         }
-        int choice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-        if (choice >= 1 && choice <= enemies.size()) {
-            return enemies.get(choice - 1);
-        } else {
-            System.out.println("Invalid choice. Targeting first enemy by default.");
-            return enemies.getFirst();
+
+        while (true) {
+            System.out.print("Enter the number of the target enemy: ");
+            if (scanner.hasNextInt()) {
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+                if (choice >= 1 && choice <= enemies.size()) {
+                    return enemies.get(choice - 1);
+                } else {
+                    System.out.println("Invalid choice. Please enter a number between 1 and " + enemies.size() + ".");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.next(); // Consume invalid input
+            }
         }
     }
 
-    // Method to get a random hero
+    // Method to get a random hero, used for targeting
     private BaseHero randomHero() {
         int index = (int) (Math.random() * heroes.size());
         return heroes.get(index);
     }
 
+    // Method to sleep for a bit, used throughout the game to add delay for readability
     private static void sleep(int milli){
         try {
-            Thread.sleep(milli); // Pause for 3 seconds
+            Thread.sleep(milli); // Pause for however many milliseconds
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt(); // Preserve interrupted status
+            System.err.println("Thread interrupted while sleeping: " + e.getMessage());
         }
     }
 }
