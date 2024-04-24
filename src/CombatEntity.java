@@ -18,8 +18,10 @@ public abstract class CombatEntity {
 
     // Implement attack method
     public int attack(CombatEntity target) {
-        // Calculate damage based on attacker's attack stat
-        int damage = this.attack;
+        //figure out range of attack damage
+        int MAX_HIT = this.attack + (this.magic / 2) + 1;
+        int MIN_HIT = this.attack - ((this.magic / 2) + 1);
+        int damage = (int) (Math.random() * (MAX_HIT - MIN_HIT + 1)) + MIN_HIT;
 
         damage -= target.getDefense();
 

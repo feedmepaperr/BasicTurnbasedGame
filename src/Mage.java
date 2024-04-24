@@ -2,14 +2,16 @@
 public class Mage extends BaseHero {
 
     public Mage(String name) {
-        super(name, 100, 5, 5, 10, 15); // adjust as needed for balance :)
+        super(name, 70, 5, 5, 10, 15); // adjust as needed for balance :)
     }
 
     // Implement attack method
     @Override
     public int attack(CombatEntity target) {
-        // Calculate damage based on attacker's attack stat
-        int damage = this.magic;
+        //figure out range of magic damage
+        int MAX_HIT = this.magic + (this.attack / 2) + 1;
+        int MIN_HIT = this.magic - ((this.attack / 2) + 1);
+        int damage = (int) (Math.random() * (MAX_HIT - MIN_HIT + 1)) + MIN_HIT;
 
         // Ensure damage is non-negative
         damage = Math.max(0, damage);

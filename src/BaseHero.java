@@ -1,3 +1,4 @@
+
 public class BaseHero extends CombatEntity {
 
     public BaseHero(String name, int health, int attack, int defense, int magic, int agility) {

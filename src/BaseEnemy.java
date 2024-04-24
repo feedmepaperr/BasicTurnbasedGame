@@ -1,3 +1,4 @@
+
 public class BaseEnemy extends CombatEntity {
 
     public BaseEnemy(String name, int health, int attack, int defense, int agility) {
