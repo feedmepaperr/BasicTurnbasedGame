@@ -4,19 +4,20 @@ public class Main {
     private static final int NUM_HEROES = 3;
     private static List<BaseHero> heroes;
     private static List<BaseEnemy> enemies;
+    private static boolean gameOver = false;
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         heroes = selectHeroes(sc); // Select heroes for the game
         enemies = initializeEnemies(); // Initialize enemies
-        boolean gameOver = false;
 
         while (!gameOver) {
             List<CombatEntity> combatEntities = initializeCombatEntities(heroes, enemies); // Initialize combat entities
             playRound(combatEntities, sc); // Play a round of combat
-            gameOver = checkGameOver(); // Check if the game is over
         }
 
+        sc.close();
+        System.out.println();
         System.out.println("Game Over");
     }
 
@@ -99,6 +100,10 @@ public class Main {
     // Method to play a round of combat
     private static void playRound(List<CombatEntity> combatEntities, Scanner scanner) {
         // Hero and enemy turns
+        gameOver = checkGameOver(); // Check if the game is over
+        if (gameOver){
+            return;
+        }
         for (CombatEntity entity : combatEntities) {
             sleep(500); // Pause between turns
             System.out.println();
